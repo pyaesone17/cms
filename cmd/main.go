@@ -1,13 +1,18 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/pyaesone17/blog"
+	"github.com/pyaesone17/blog/internal"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var version string
@@ -36,6 +41,9 @@ func main() {
 	log.Printf("STARTUP: %s version %s", os.Args[0], version)
 	log.Printf("Listening on: %s", viper.GetString("address"))
 
-	svc := blog.NewBlogService(viper.GetViper(), logger)
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
+
+	svc := blog.NewBlogService(&internal.App{Config: viper.GetViper(), Log: logger, Db: client})
 	svc.ListenAndServe()
 }

@@ -3,24 +3,22 @@ package posts
 import (
 	"net/http"
 
+	"github.com/pyaesone17/blog/internal"
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 )
 
 type Controller struct {
-	config *viper.Viper
-	log    *logrus.Logger
+	app *internal.App
 }
 
-func NewController(config *viper.Viper, log *logrus.Logger) *Controller {
+func NewController(app *internal.App) *Controller {
 	return &Controller{
-		config: config,
-		log:    log,
+		app: app,
 	}
 }
 
 func (con *Controller) Create(w http.ResponseWriter, r *http.Request) {
-	con.log.WithFields(logrus.Fields{
+	con.app.Log.WithFields(logrus.Fields{
 		"animal": "walrus",
 	}).Info("A walrus appears")
 

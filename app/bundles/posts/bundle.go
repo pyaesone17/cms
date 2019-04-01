@@ -2,16 +2,15 @@ package posts
 
 import (
 	"github.com/pyaesone17/blog/app/core"
-	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
+	"github.com/pyaesone17/blog/internal"
 )
 
 type Bundle struct {
 	routes []core.Route
 }
 
-func NewBundle(config *viper.Viper, log *logrus.Logger) core.Bundle {
-	c := NewController(config, log)
+func NewBundle(app *internal.App) core.Bundle {
+	c := NewController(app)
 	r := []core.Route{
 		core.Route{
 			Method:  "POST",
