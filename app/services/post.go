@@ -30,6 +30,10 @@ func (postservice *PostService) Create(post *models.Post, category *models.Categ
 	}
 }
 
-func (postservice *PostService) Get(id string) (models.PostFractal, error) {
-	return postservice.postdatastore.Get(id)
+func (postservice *PostService) Get() ([]*models.Post, error) {
+	return postservice.postdatastore.Get()
+}
+
+func (postservice *PostService) FindPost(id string) (*models.Post, error) {
+	return postservice.postdatastore.Find(id)
 }

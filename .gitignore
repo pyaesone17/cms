@@ -1,0 +1,5 @@
+gin-bin
+logrus.log
+/data/db
+mongod.conf
+mongo.log

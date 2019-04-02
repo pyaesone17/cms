@@ -1,26 +1,8 @@
 package models
 
-import "encoding/json"
-
 type Post struct {
-	ID      string `json:"_id"`
-	Title   string `json:"title"`
-	Content string `json:"content"`
-}
-
-type PostWithCategory struct {
-	*Post
-	Categoy *Category `json:"category"`
-}
-
-func (p Post) Json() ([]byte, error) {
-	return json.Marshal(p)
-}
-
-func (p PostWithCategory) Json() ([]byte, error) {
-	return json.Marshal(p)
-}
-
-type PostFractal interface {
-	Json() ([]byte, error)
+	ID      string    `json:"_id" jsonapi:"primary,id"`
+	Title   string    `json:"title" jsonapi:"attr,title"`
+	Content string    `json:"content" jsonapi:"attr,content"`
+	Categoy *Category `json:"category" jsonapi:"attr,category"`
 }

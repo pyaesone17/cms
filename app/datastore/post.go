@@ -13,9 +13,10 @@ import (
 )
 
 type PostDB interface {
-	Get(id string) (models.PostFractal, error)
-	CreatePost(p models.PostFractal)
-	AddCategory(p models.PostFractal, category *models.Category)
+	Find(id string) (*models.Post, error)
+	Get() ([]*models.Post, error)
+	CreatePost(p *models.Post)
+	AddCategory(p *models.Post, category *models.Category)
 }
 
 type postdb struct {
@@ -26,9 +27,37 @@ func NewPostDataStore(client *mongo.Client) PostDB {
 	return postdb{client}
 }
 
-func (db postdb) Get(id string) (models.PostFractal, error) {
+func (db postdb) Get() ([]*models.Post, error) {
 	type m struct {
-		Post models.Post        `json:"post" bson:"post"`
+		Post *models.Post       `json:"post" bson:"post"`
+		Blah string             `json:"blah"`
+		ID   primitive.ObjectID `json:"_id" bson:"_id"`
+	}
+
+	collection := db.client.Database(Database).Collection(PostCollection)
+	cursor, err := collection.Find(context.TODO(), bson.D{{}})
+	if err != nil {
+		return nil, errors.Wrap(err, "decode failed")
+	}
+
+	var posts []*models.Post
+
+	for cursor.Next(context.TODO()) {
+		var result m
+		err := cursor.Decode(&result)
+		if err != nil {
+			return nil, errors.Wrap(err, "decode failed")
+		}
+		result.Post.ID = result.ID.Hex()
+		posts = append(posts, result.Post)
+	}
+
+	return posts, nil
+}
+
+func (db postdb) Find(id string) (*models.Post, error) {
+	type m struct {
+		Post *models.Post       `json:"post" bson:"post"`
 		Blah string             `json:"blah"`
 		ID   primitive.ObjectID `json:"_id" bson:"_id"`
 	}
@@ -55,7 +84,7 @@ func (db postdb) Get(id string) (models.PostFractal, error) {
 	return result.Post, nil
 }
 
-func (db postdb) CreatePost(p models.PostFractal) {
+func (db postdb) CreatePost(p *models.Post) {
 	collection := db.client.Database(Database).Collection(PostCollection)
 	insertResult, err := collection.InsertOne(context.TODO(), bson.D{
 		{"post", p},
@@ -67,9 +96,9 @@ func (db postdb) CreatePost(p models.PostFractal) {
 	fmt.Println("Inserted a single document: ", insertResult.InsertedID)
 }
 
-func (db postdb) AddCategory(p models.PostFractal, category *models.Category) {
+func (db postdb) AddCategory(p *models.Post, category *models.Category) {
 	collection := db.client.Database(Database).Collection(PostCollection)
-	filter := bson.D{{"id", p.(*models.Post).ID}}
+	filter := bson.D{{"id", p.ID}}
 
 	update := bson.D{{"category_id", category.ID}}
 	updateResult, err := collection.UpdateOne(context.TODO(), filter, update)
