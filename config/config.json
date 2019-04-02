@@ -1,4 +1,4 @@
 {
-  "address": ":7000",
-  "mongodb": "mongodb://localhost"
+  "address": ":4000",
+  "mongodb": "mongodb://localhost:27017"
 }
