@@ -4,3 +4,18 @@
 {"animal":"walrus","level":"info","msg":"A walrus appears","time":"2019-04-02T13:14:48+08:00"}
 {"animal":"walrus","level":"info","msg":"A walrus appears","time":"2019-04-02T13:14:48+08:00"}
 {"animal":"walrus","level":"info","msg":"A walrus appears","time":"2019-04-02T13:14:56+08:00"}
+{"animal":"walrus","level":"info","msg":"A walrus appears","time":"2019-04-02T13:53:25+08:00"}
+{"animal":"walrus","level":"info","msg":"A walrus appears","time":"2019-04-02T13:53:26+08:00"}
+{"animal":"walrus","level":"info","msg":"A walrus appears","time":"2019-04-02T13:53:27+08:00"}
+{"animal":"walrus","level":"info","msg":"A walrus appears","time":"2019-04-02T13:53:28+08:00"}
+{"animal":"walrus","level":"info","msg":"A walrus appears","time":"2019-04-02T13:53:28+08:00"}
+{"animal":"walrus","level":"info","msg":"A walrus appears","time":"2019-04-02T15:42:14+08:00"}
+{"level":"info","msg":"A post has been created","post":{"id":"","title":"Blog","content":""},"time":"2019-04-02T15:42:14+08:00"}
+{"level":"error","message":"encoding/hex: odd length hex string\nparsed from hex to id failed\ngithub.com/pyaesone17/blog/app/datastore.postdb.Get\n\t/Users/nyanwin/go/src/github.com/pyaesone17/blog/app/datastore/post.go:40\ngithub.com/pyaesone17/blog/app/services.(*PostService).Get\n\t/Users/nyanwin/go/src/github.com/pyaesone17/blog/app/services/post.go:34\ngithub.com/pyaesone17/blog/app/bundles/posts.(*Controller).Get\n\t/Users/nyanwin/go/src/github.com/pyaesone17/blog/app/bundles/posts/controller.go:41\ngithub.com/pyaesone17/blog/app/bundles/posts.(*Controller).Get-fm\n\t/Users/nyanwin/go/src/github.com/pyaesone17/blog/app/bundles/posts/bundle.go:28\nnet/http.HandlerFunc.ServeHTTP\n\t/usr/local/Cellar/go/1.10.3/libexec/src/net/http/server.go:1947\ngithub.com/go-chi/chi.(*Mux).routeHTTP\n\t/Users/nyanwin/go/src/github.com/go-chi/chi/mux.go:425\ngithub.com/go-chi/chi.(*Mux).(github.com/go-chi/chi.routeHTTP)-fm\n\t/Users/nyanwin/go/src/github.com/go-chi/chi/mux.go:369\nnet/http.HandlerFunc.ServeHTTP\n\t/usr/local/Cellar/go/1.10.3/libexec/src/net/http/server.go:1947\ngithub.com/go-chi/chi.(*Mux).ServeHTTP\n\t/Users/nyanwin/go/src/github.com/go-chi/chi/mux.go:82\nnet/http.serverHandler.ServeHTTP\n\t/usr/local/Cellar/go/1.10.3/libexec/src/net/http/server.go:2694\nnet/http.(*conn).serve\n\t/usr/local/Cellar/go/1.10.3/libexec/src/net/http/server.go:1830\nruntime.goexit\n\t/usr/local/Cellar/go/1.10.3/libexec/src/runtime/asm_amd64.s:2361","msg":"A walrus appears","time":"2019-04-02T16:56:41+08:00"}
+{"level":"error","message":"encoding/hex: odd length hex string","msg":"A walrus appears","time":"2019-04-02T16:59:54+08:00"}
+{"level":"error","message":"encoding/hex: odd length hex string","msg":"A walrus appears","time":"2019-04-02T17:01:20+08:00"}
+{"level":"error","message":"encoding/hex: odd length hex string","msg":"A walrus appears","time":"2019-04-02T17:06:20+08:00"}
+{"level":"error","message":"encoding/hex: odd length hex string","msg":"A walrus appears","time":"2019-04-02T17:06:55+08:00"}
+{"animal":"walrus","level":"info","msg":"A walrus appears","time":"2019-04-02T17:07:06+08:00"}
+{"level":"info","msg":"A post has been created","post":{"_id":"","title":"Blog","content":""},"time":"2019-04-02T17:07:06+08:00"}
+{"level":"error","message":"encoding/hex: odd length hex string","msg":"A walrus appears","time":"2019-04-02T17:07:10+08:00"}

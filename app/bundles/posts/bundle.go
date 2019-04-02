@@ -22,6 +22,11 @@ func NewBundle(app *internal.App) core.Bundle {
 			Path:    "/blogs",
 			Handler: c.Create,
 		},
+		core.Route{
+			Method:  "GET",
+			Path:    "/blogs/{post_id}",
+			Handler: c.Get,
+		},
 	}
 	return &Bundle{r}
 }
