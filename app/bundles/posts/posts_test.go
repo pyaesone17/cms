@@ -14,13 +14,13 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	"github.com/pyaesone17/blog"
 	posts "github.com/pyaesone17/blog/app/bundles/posts"
+	"github.com/pyaesone17/blog/boot"
 )
 
 var _ = Describe("Posts", func() {
 	var (
-		svc *blog.Service
+		svc *boot.Service
 	)
 
 	BeforeEach(func() {
@@ -28,8 +28,8 @@ var _ = Describe("Posts", func() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		svc = blog.NewBlogService()
-		svc.Boot(dir + "/../../../")
+		svc = boot.NewBlogService(dir + "/../../../")
+		svc.Boot()
 	})
 
 	Describe("Post Controller", func() {

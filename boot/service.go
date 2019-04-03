@@ -1,4 +1,4 @@
-package blog
+package boot
 
 import (
 	"context"
@@ -19,20 +19,21 @@ import (
 
 // Service holds
 type Service struct {
-	App *internal.App
-	srv *http.Server
+	RootDir string
+	App     *internal.App
+	srv     *http.Server
 }
 
 // NewBlogService is the constructor
-func NewBlogService() *Service {
-	return &Service{}
+func NewBlogService(rootDir string) *Service {
+	return &Service{RootDir: rootDir}
 }
 
-func (s *Service) Boot(rootDir string) {
+func (s *Service) Boot() {
 
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile | log.Lmicroseconds)
-	viper.AddConfigPath(rootDir + "/config") // optionally look for config in the working directory
-	err := viper.ReadInConfig()              // Find and read the config file
+	viper.AddConfigPath(s.RootDir + "/config") // optionally look for config in the working directory
+	err := viper.ReadInConfig()                // Find and read the config file
 
 	if err != nil { // Handle errors reading the config file
 		panic(fmt.Errorf("fatal error config file: %s", err))
@@ -41,7 +42,7 @@ func (s *Service) Boot(rootDir string) {
 	logger := logrus.New()
 	logger.Formatter = &logrus.JSONFormatter{}
 
-	file, err := os.OpenFile(rootDir+"/logrus.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	file, err := os.OpenFile(s.RootDir+"/logrus.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err == nil {
 		logger.Out = file
 	} else {
@@ -82,8 +83,8 @@ func (s *Service) ListenAndServe() {
 			r.Method(route.Method, route.Path, route.Handler)
 		}
 	}
-
 	err := http.ListenAndServe(s.App.Config.GetString("address"), r)
+
 	if err != nil {
 		log.Fatal(err)
 	}
