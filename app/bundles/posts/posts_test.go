@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"os"
 
 	"github.com/go-chi/chi"
 	. "github.com/onsi/ginkgo"
@@ -23,8 +24,12 @@ var _ = Describe("Posts", func() {
 	)
 
 	BeforeEach(func() {
+		dir, err := os.Getwd()
+		if err != nil {
+			log.Fatal(err)
+		}
 		svc = blog.NewBlogService()
-		svc.Boot()
+		svc.Boot(dir + "/../../../")
 	})
 
 	Describe("Post Controller", func() {
