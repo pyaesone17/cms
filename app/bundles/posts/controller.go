@@ -43,8 +43,8 @@ func (con *Controller) Create(w http.ResponseWriter, r *http.Request) {
 		errs := err.(validator.ValidationErrors)
 		trans, _ := core.UniversalTranslator.GetTranslator("en")
 
-		customerrors := make([]*jsonapi.ErrorObject, 0)
-		for _, e := range errs {
+		customerrors := make([]*jsonapi.ErrorObject, len(errs))
+		for index, e := range errs {
 			// can translate each error one at a time.
 			fmt.Println(e.Translate(trans))
 			customerror := &jsonapi.ErrorObject{
@@ -53,7 +53,7 @@ func (con *Controller) Create(w http.ResponseWriter, r *http.Request) {
 				Status: "422",
 				Code:   core.VALIDATIONERROR,
 			}
-			customerrors = append(customerrors, customerror)
+			customerrors[index] = customerror
 		}
 
 		con.SendCustomError(w, customerrors, http.StatusUnprocessableEntity)
