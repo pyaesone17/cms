@@ -19,7 +19,7 @@ func NewBundle(app *internal.App) core.Bundle {
 		},
 		core.Route{
 			Method:  "PUT",
-			Path:    "/blogs",
+			Path:    "/blogs/{post_id}",
 			Handler: c.Update,
 		},
 		core.Route{

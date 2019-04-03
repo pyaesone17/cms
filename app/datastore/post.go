@@ -105,7 +105,7 @@ func (db postdb) UpdatePost(post *models.Post) error {
 	filter := bson.D{{"_id", objectID}}
 
 	update := bson.D{
-		{"post", post},
+		{"$set", bson.D{{"post", post}}},
 	}
 
 	collection := db.client.Database(Database).Collection(PostCollection)

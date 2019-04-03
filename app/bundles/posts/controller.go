@@ -54,6 +54,10 @@ func (con *Controller) Update(w http.ResponseWriter, r *http.Request) {
 	post.ID = postid
 	con.GetContent(post, r)
 
+	con.app.Log.WithFields(logrus.Fields{
+		"post": post,
+	}).Error("post")
+
 	err := con.Validate(post)
 	if err != nil {
 		con.SendValidationError(err, w)
