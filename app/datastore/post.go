@@ -15,7 +15,8 @@ import (
 type PostDB interface {
 	Find(id string) (*models.Post, error)
 	Get() ([]*models.Post, error)
-	CreatePost(p *models.Post)
+	CreatePost(p *models.Post) error
+	UpdatePost(p *models.Post) error
 	AddCategory(p *models.Post, category *models.Category)
 }
 
@@ -84,17 +85,37 @@ func (db postdb) Find(id string) (*models.Post, error) {
 	return result.Post, nil
 }
 
-func (db postdb) CreatePost(p *models.Post) {
+func (db postdb) CreatePost(p *models.Post) error {
 	collection := db.client.Database(Database).Collection(PostCollection)
 	insertResult, err := collection.InsertOne(context.TODO(), bson.D{
 		{"post", p},
 	})
 
 	if err != nil {
-		log.Fatal(err)
+		return errors.Wrap(err, "insert failed")
 	}
 	fmt.Println("Inserted a single document: ", insertResult.InsertedID)
 	p.ID = insertResult.InsertedID.(primitive.ObjectID).Hex()
+
+	return nil
+}
+
+func (db postdb) UpdatePost(post *models.Post) error {
+	objectID, err := primitive.ObjectIDFromHex(post.ID)
+	filter := bson.D{{"_id", objectID}}
+
+	update := bson.D{
+		{"post", post},
+	}
+
+	collection := db.client.Database(Database).Collection(PostCollection)
+	updateResult, err := collection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		return errors.Wrap(err, "update failed")
+	}
+
+	fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult.MatchedCount, updateResult.ModifiedCount)
+	return nil
 }
 
 func (db postdb) AddCategory(p *models.Post, category *models.Category) {

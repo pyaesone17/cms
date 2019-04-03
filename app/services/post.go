@@ -19,15 +19,32 @@ func NewPostService(app *internal.App) *PostService {
 	}
 }
 
-func (postservice *PostService) Create(post *models.Post, category *models.Category) {
-	postservice.postdatastore.CreatePost(post)
-	postservice.app.Log.WithFields(logrus.Fields{
-		"post": post,
-	}).Info("A post has been created")
+func (postservice *PostService) Create(post *models.Post, category *models.Category) error {
+	err := postservice.postdatastore.CreatePost(post)
+
+	if err != nil {
+		postservice.app.Log.WithFields(logrus.Fields{
+			"post": post,
+		}).Info("A post has been created")
+	}
 
 	if category != nil {
 		postservice.postdatastore.AddCategory(post, category)
 	}
+
+	return err
+}
+
+func (postservice *PostService) Update(post *models.Post, category *models.Category) error {
+	err := postservice.postdatastore.UpdatePost(post)
+
+	if err != nil {
+		postservice.app.Log.WithFields(logrus.Fields{
+			"post": post,
+		}).Info("A post has been updated")
+	}
+
+	return err
 }
 
 func (postservice *PostService) Get() ([]*models.Post, error) {

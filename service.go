@@ -28,10 +28,11 @@ func NewBlogService() *Service {
 	return &Service{}
 }
 
-func (s *Service) Boot() {
+func (s *Service) Boot(rootDir string) {
+
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile | log.Lmicroseconds)
-	viper.AddConfigPath("/Users/nyanwin/go/src/github.com/pyaesone17/blog/config") // optionally look for config in the working directory
-	err := viper.ReadInConfig()                                                    // Find and read the config file
+	viper.AddConfigPath(rootDir + "/config") // optionally look for config in the working directory
+	err := viper.ReadInConfig()              // Find and read the config file
 
 	if err != nil { // Handle errors reading the config file
 		panic(fmt.Errorf("fatal error config file: %s", err))
@@ -40,7 +41,7 @@ func (s *Service) Boot() {
 	logger := logrus.New()
 	logger.Formatter = &logrus.JSONFormatter{}
 
-	file, err := os.OpenFile("logrus.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	file, err := os.OpenFile(rootDir+"/logrus.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err == nil {
 		logger.Out = file
 	} else {

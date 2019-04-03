@@ -2,6 +2,7 @@ package core
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -67,4 +68,25 @@ func (con *Controller) GetContent(v interface{}, r *http.Request) error {
 	}
 
 	return nil
+}
+
+func (con *Controller) SendValidationError(err error, w http.ResponseWriter) {
+	// translate all error at once
+	errs := err.(validator.ValidationErrors)
+	trans, _ := UniversalTranslator.GetTranslator("en")
+
+	customerrors := make([]*jsonapi.ErrorObject, len(errs))
+	for index, e := range errs {
+		// can translate each error one at a time.
+		fmt.Println(e.Translate(trans))
+		customerror := &jsonapi.ErrorObject{
+			Title:  e.Field(),
+			Detail: e.Translate(trans),
+			Status: "422",
+			Code:   VALIDATIONERROR,
+		}
+		customerrors[index] = customerror
+	}
+
+	con.SendCustomError(w, customerrors, http.StatusUnprocessableEntity)
 }
