@@ -94,6 +94,7 @@ func (db postdb) CreatePost(p *models.Post) {
 		log.Fatal(err)
 	}
 	fmt.Println("Inserted a single document: ", insertResult.InsertedID)
+	p.ID = insertResult.InsertedID.(primitive.ObjectID).Hex()
 }
 
 func (db postdb) AddCategory(p *models.Post, category *models.Category) {

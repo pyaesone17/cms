@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"go.mongodb.org/mongo-driver/mongo"
+	validator "gopkg.in/go-playground/validator.v9"
 
 	"github.com/go-chi/chi"
 	"github.com/google/jsonapi"
@@ -31,17 +32,43 @@ func NewController(app *internal.App) *Controller {
 }
 
 func (con *Controller) Create(w http.ResponseWriter, r *http.Request) {
+	post := &models.Post{}
 
-	con.app.Log.WithFields(logrus.Fields{
-		"animal": "walrus",
-	}).Info("A walrus appears")
+	con.GetContent(post, r)
 
-	con.postservice.Create(&models.Post{Title: "Blog"}, nil)
-	con.SendJSON(w, "Hi")
+	err := con.Validate(post)
+
+	if err != nil {
+		// translate all error at once
+		errs := err.(validator.ValidationErrors)
+		trans, _ := core.UniversalTranslator.GetTranslator("en")
+
+		customerrors := make([]*jsonapi.ErrorObject, 0)
+		for _, e := range errs {
+			// can translate each error one at a time.
+			fmt.Println(e.Translate(trans))
+			customerror := &jsonapi.ErrorObject{
+				Title:  e.Field(),
+				Detail: e.Translate(trans),
+				Status: "422",
+				Code:   core.VALIDATIONERROR,
+			}
+			customerrors = append(customerrors, customerror)
+		}
+
+		con.SendCustomError(w, customerrors, http.StatusUnprocessableEntity)
+		return
+	}
+
+	con.postservice.Create(post, nil)
+	con.SendJSON(w, post)
+}
+
+func (con *Controller) Update(w http.ResponseWriter, r *http.Request) {
+
 }
 
 func (con *Controller) Get(w http.ResponseWriter, r *http.Request) {
-
 	posts, err := con.postservice.Get()
 
 	if err != nil {
@@ -62,7 +89,6 @@ func (con *Controller) Get(w http.ResponseWriter, r *http.Request) {
 }
 
 func (con *Controller) Show(w http.ResponseWriter, r *http.Request) {
-
 	postid := chi.URLParam(r, "post_id") // from a route like /users/{userID}
 	post, err := con.postservice.FindPost(postid)
 
@@ -75,7 +101,7 @@ func (con *Controller) Show(w http.ResponseWriter, r *http.Request) {
 				Status: "404",
 				Code:   core.CODENOTFOUNDERROR,
 			}}
-			con.SendCustomError(w, customerrors)
+			con.SendCustomError(w, customerrors, http.StatusNotFound)
 			return
 		}
 
