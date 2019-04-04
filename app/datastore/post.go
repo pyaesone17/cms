@@ -85,17 +85,17 @@ func (db postdb) Find(id string) (*models.Post, error) {
 	return result.Post, nil
 }
 
-func (db postdb) CreatePost(p *models.Post) error {
+func (db postdb) CreatePost(post *models.Post) error {
 	collection := db.client.Database(Database).Collection(PostCollection)
 	insertResult, err := collection.InsertOne(context.TODO(), bson.D{
-		{"post", p},
+		{"post", post.GetSaveModel()},
 	})
 
 	if err != nil {
 		return errors.Wrap(err, "insert failed")
 	}
 	fmt.Println("Inserted a single document: ", insertResult.InsertedID)
-	p.ID = insertResult.InsertedID.(primitive.ObjectID).Hex()
+	post.ID = insertResult.InsertedID.(primitive.ObjectID).Hex()
 
 	return nil
 }
@@ -105,7 +105,7 @@ func (db postdb) UpdatePost(post *models.Post) error {
 	filter := bson.D{{"_id", objectID}}
 
 	update := bson.D{
-		{"$set", bson.D{{"post", post}}},
+		{"$set", bson.D{{"post", post.GetSaveModel()}}},
 	}
 
 	collection := db.client.Database(Database).Collection(PostCollection)

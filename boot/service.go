@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 	"github.com/pyaesone17/blog/app/bundles/posts"
 	"github.com/pyaesone17/blog/app/core"
 	"github.com/pyaesone17/blog/internal"
@@ -76,6 +77,7 @@ func (s *Service) Boot() {
 // ListenAndServe will listen the port
 func (s *Service) ListenAndServe() {
 	r := chi.NewRouter()
+	r.Use(middleware.Logger)
 
 	for _, b := range registerBundles(s.App) {
 		for _, route := range b.GetRoutes() {
