@@ -15,7 +15,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	svc := boot.NewBlogService(dir)
+	svc := boot.NewBlogService(dir + "/../")
 	svc.Boot()
 	svc.ListenAndServe()
 }

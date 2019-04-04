@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/imdario/mergo"
 	"github.com/pkg/errors"
 	"github.com/pyaesone17/blog/app/models"
+	"github.com/pyaesone17/blog/app/utility"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -101,11 +103,19 @@ func (db postdb) CreatePost(post *models.Post) error {
 }
 
 func (db postdb) UpdatePost(post *models.Post) error {
+	result, err := db.Find(post.ID)
+	if err != nil {
+		return errors.Wrap(err, "find failed when updating post")
+	}
+
+	updateModel := post.GetUpdateModel()
+	mergo.Merge(&updateModel, result.GetUpdateModel(), mergo.WithTransformers(utility.TimeTransfomer{}))
+
 	objectID, err := primitive.ObjectIDFromHex(post.ID)
 	filter := bson.D{{"_id", objectID}}
 
 	update := bson.D{
-		{"$set", bson.D{{"post", post.GetSaveModel()}}},
+		{"$set", bson.D{{"post", updateModel}}},
 	}
 
 	collection := db.client.Database(Database).Collection(PostCollection)
